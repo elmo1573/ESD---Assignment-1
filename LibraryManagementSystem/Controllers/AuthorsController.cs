@@ -12,7 +12,8 @@ public class AuthorsController(LibraryContext context) : Controller
         // DO NOT MODIFY ABOVE THIS LINE
         // TODO: 11.1 Fetch all authors and return list, include Books for each author and return the view with authors
         // Refer to similar listing for Members
-        throw new NotImplementedException("AuthorsController.Authors is not implemented");
+        var authors = context.Authors.Include(a => a.Books).ToList();
+        return View(authors);
         // DO NOT MODIFY BELOW THIS LINE
     }
 
@@ -27,9 +28,22 @@ public class AuthorsController(LibraryContext context) : Controller
     {
         // DO NOT MODIFY ABOVE THIS LINE
         // TODO: 11.2 Check if model is valid then add author to context and save changes, then redirect to Authors action
-        
+        if (ModelState.IsValid)
+        {
+            // Trim whitespace and check for empty strings
+            if (string.IsNullOrWhiteSpace(author.Name))
+            {
+                ModelState.AddModelError("Name", "Author name cannot be empty or whitespace only.");
+                return View(author);
+            }
+            
+            author.Name = author.Name.Trim();
+            context.Authors.Add(author);
+            context.SaveChanges();
+            return RedirectToAction("Authors");
+        }
         // TODO: 11.3 Return the view with author if model is not valid, errors will be auto populated by the framework
-        throw new NotImplementedException("AuthorsController.Add is not implemented");
+        return View(author);
         // DO NOT MODIFY BELOW THIS LINE
     }
 
@@ -38,9 +52,15 @@ public class AuthorsController(LibraryContext context) : Controller
     {
         // DO NOT MODIFY ABOVE THIS LINE
         // TODO: 11.4 Check if author exists, remove author from context and save changes, then redirect to Authors action
-        
-        // TODO: 11.5 Return NotFound() if author does not exist
-        throw new NotImplementedException("AuthorsController.Delete is not implemented");
+        var author = context.Authors.Find(id);
+        if (author == null)
+        {
+            // TODO: 11.5 Return NotFound() if author does not exist
+            return NotFound();
+        }
+        context.Authors.Remove(author);
+        context.SaveChanges();
+        return RedirectToAction("Authors");
         // DO NOT MODIFY BELOW THIS LINE
     }
 
@@ -49,7 +69,12 @@ public class AuthorsController(LibraryContext context) : Controller
     {
         // DO NOT MODIFY ABOVE THIS LINE
         // TODO: 11.6 Find author by id, return NotFound() if author does not exist, otherwise return the view with author
-        throw new NotImplementedException("AuthorsController.Update is not implemented");
+        var author = context.Authors.FirstOrDefault(a => a.Id == id);
+        if (author == null)
+        {
+            return NotFound();
+        }
+        return View(author);
         // DO NOT MODIFY BELOW THIS LINE
     }
 
@@ -58,7 +83,26 @@ public class AuthorsController(LibraryContext context) : Controller
     {
         // DO NOT MODIFY ABOVE THIS LINE
         // TODO: 11.7 Check if model is valid then update author in context and save changes, then redirect to Authors action
-        throw new NotImplementedException("AuthorsController.Update is not implemented");
+        if (ModelState.IsValid)
+        {
+            var existing = context.Authors.FirstOrDefault(a => a.Id == author.Id);
+            if (existing == null)
+            {
+                return NotFound();
+            }
+            
+            // Trim whitespace and check for empty strings
+            if (string.IsNullOrWhiteSpace(author.Name))
+            {
+                ModelState.AddModelError("Name", "Author name cannot be empty or whitespace only.");
+                return View(author);
+            }
+            
+            existing.Name = author.Name.Trim();
+            context.SaveChanges();
+            return RedirectToAction("Authors");
+        }
+        return View(author);
         // DO NOT MODIFY BELOW THIS LINE
     }
 }

@@ -9,14 +9,13 @@ namespace LibraryManagementSystem.Domain
         public ICollection<Loan> Loans { get; set; } = new List<Loan>();
 
         // Number of loans that have not been returned
-        public int LoanCount => Loans.Select(l => l.ReturnDate == null).Count();
+        public int LoanCount => Loans.Count(l => l.ReturnDate == null);
 
         public virtual bool CanBorrow()
         {
             // DO NOT MODIFY ABOVE THIS LINE
-            // TODO: 2. return true if the member has less than 3 loans that have not been returned
-
-            throw new NotImplementedException("Member.CanBorrow is not implemented");
+            // return true if the member has less than 3 loans that have not been returned
+            return LoanCount < 3;
             // DO NOT MODIFY BELOW THIS LINE
         }
 

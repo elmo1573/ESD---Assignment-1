@@ -15,7 +15,7 @@ public class BooksController(LibraryContext context) : Controller
             // DO NOT MODIFY ABOVE THIS LINE
             // TODO: 10. Include Authors in the query
             // Notice: We will have to use SQL Joins if we were not using ORM like Entity Framework
-            
+            .Include(b => b.Authors)
             // DO NOT MODIFY BELOW THIS LINE
             .ToList();
         return View(books);
@@ -35,10 +35,25 @@ public class BooksController(LibraryContext context) : Controller
     {
         if (ModelState.IsValid)
         {
+            // Trim whitespace and validate
+            if (string.IsNullOrWhiteSpace(model.Title))
+            {
+                ModelState.AddModelError("Title", "Book title cannot be empty or whitespace only.");
+                model.AvailableAuthors = context.Authors.ToList();
+                return View(model);
+            }
+            
+            if (string.IsNullOrWhiteSpace(model.ISBN))
+            {
+                ModelState.AddModelError("ISBN", "ISBN cannot be empty or whitespace only.");
+                model.AvailableAuthors = context.Authors.ToList();
+                return View(model);
+            }
+            
             var book = new Book
             {
-                Title = model.Title,
-                ISBN = model.ISBN,
+                Title = model.Title.Trim(),
+                ISBN = model.ISBN.Trim(),
                 Authors = context.Authors.Where(a => model.SelectedAuthorIds != null && model.SelectedAuthorIds.Contains(a.Id)).ToList()
             };
             context.Books.Add(book);
@@ -77,8 +92,24 @@ public class BooksController(LibraryContext context) : Controller
             {
                 return NotFound();
             }
-            book.Title = model.Title;
-            book.ISBN = model.ISBN;
+            
+            // Trim whitespace and validate
+            if (string.IsNullOrWhiteSpace(model.Title))
+            {
+                ModelState.AddModelError("Title", "Book title cannot be empty or whitespace only.");
+                model.AvailableAuthors = context.Authors.ToList();
+                return View(model);
+            }
+            
+            if (string.IsNullOrWhiteSpace(model.ISBN))
+            {
+                ModelState.AddModelError("ISBN", "ISBN cannot be empty or whitespace only.");
+                model.AvailableAuthors = context.Authors.ToList();
+                return View(model);
+            }
+            
+            book.Title = model.Title.Trim();
+            book.ISBN = model.ISBN.Trim();
             book.Authors = context.Authors.Where(a => model.SelectedAuthorIds != null && model.SelectedAuthorIds.Contains(a.Id)).ToList();
             context.SaveChanges();
             return RedirectToAction("Books");

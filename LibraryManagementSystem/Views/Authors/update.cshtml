@@ -7,6 +7,17 @@
 @* DO NOT MODIFY ABOVE THIS LINE *@
 @* TODO: 14. Add a form to update an author. You may want to refer to update.cshtml for Members *@
 
+<form asp-action="Update" method="post">
+    
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary" style="margin-top:10px;">Update</button>
+    <a asp-action="Authors" class="btn btn-secondary" style="margin-top:10px;">Cancel</a>
+</form>
+
 @* DO NOT MODIFY UNDER THIS LINE *@
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
