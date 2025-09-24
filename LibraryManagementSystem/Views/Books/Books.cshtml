@@ -13,7 +13,6 @@
     <thead>
     <tr>
         <th>Title</th>
-        @* TODO: Add Authors column here *@
         <th>Authors</th>
         <th>ISBN</th>
         <th>Available</th>
@@ -25,7 +24,6 @@
     {
         <tr>
             <td>@book.Title</td>
-            @* TODO: Display authors by calling AuthorsToString() method in a cell *@
             <td>@book.AuthorsToString()</td>
             <td>@book.ISBN</td>
             <td>@(book.IsAvailable() ? "Yes" : "No")</td>
