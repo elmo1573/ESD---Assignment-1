@@ -30,7 +30,7 @@ public class AuthorsController(LibraryContext context) : Controller
         // TODO: 11.2 Check if model is valid then add author to context and save changes, then redirect to Authors action
         if (ModelState.IsValid)
         {
-            // Trim whitespace and check for empty strings
+            // Trim whitespace, check for empty strings
             if (string.IsNullOrWhiteSpace(author.Name))
             {
                 ModelState.AddModelError("Name", "Author name cannot be empty or whitespace only.");
